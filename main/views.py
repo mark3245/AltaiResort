@@ -9,6 +9,14 @@ from django.db.models import Q
 import json
 
 from .models import House, Booking, Review, GalleryImage, Contact
+from django.db.utils import OperationalError, ProgrammingError
+
+
+def get_contact_safe():
+    try:
+        return Contact.objects.first()
+    except (OperationalError, ProgrammingError):
+        return None
 from .forms import BookingForm, ContactForm
 
 
@@ -18,7 +26,7 @@ def home(request):
         'houses': House.objects.filter(is_available=True)[:3],
         'reviews': Review.objects.filter(is_approved=True)[:3],
         'gallery_images': GalleryImage.objects.filter(is_featured=True)[:6],
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/home.html', context)
 
@@ -66,7 +74,7 @@ def houses_list(request):
     context = {
         'page_obj': page_obj,
         'houses': page_obj,
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/houses_list.html', context)
 
@@ -85,7 +93,7 @@ def house_detail(request, house_id):
     
     context = {
         'house': house,
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/house_detail.html', context)
 
@@ -102,7 +110,7 @@ def gallery(request):
     context = {
         'page_obj': page_obj,
         'images': page_obj,
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/gallery.html', context)
 
@@ -119,7 +127,7 @@ def reviews(request):
     context = {
         'page_obj': page_obj,
         'reviews': page_obj,
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/reviews.html', context)
 
@@ -138,7 +146,7 @@ def booking(request):
     context = {
         'form': form,
         'houses': House.objects.filter(is_available=True),
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/booking.html', context)
 
@@ -148,7 +156,7 @@ def booking_success(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     context = {
         'booking': booking,
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/booking_success.html', context)
 
@@ -166,7 +174,7 @@ def contact(request):
     
     context = {
         'form': form,
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/contact.html', context)
 
@@ -174,7 +182,7 @@ def contact(request):
 def about(request):
     """Страница о базе отдыха"""
     context = {
-        'contact': Contact.objects.first(),
+        'contact': get_contact_safe(),
     }
     return render(request, 'main/about.html', context)
 
