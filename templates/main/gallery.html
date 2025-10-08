@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Галерея — AltaiResort{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="section-title">Галерея</h1>
+            <p class="lead">Атмосфера Алтая в наших фотографиях</p>
+        </div>
+
+        {% if images %}
+        <div class="row">
+            {% for image in images %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="gallery-item">
+                    <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="img-fluid rounded" loading="lazy">
+                    <div class="gallery-caption">
+                        <h4>{{ image.title }}</h4>
+                        {% if image.description %}
+                        <p>{{ image.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Навигация по страницам" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a></li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <p class="lead">Пока нет изображений. Скоро добавим!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+
+

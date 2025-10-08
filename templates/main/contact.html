@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Контакты — AltaiResort{% endblock %}
+
+{% block content %}
+<section class="contact-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h1 class="section-title">Контакты</h1>
+                    <p class="lead">Свяжитесь с нами любым удобным способом</p>
+                </div>
+
+                <div class="row">
+                    <!-- Contact Information -->
+                    <div class="col-lg-5 mb-5">
+                        <div class="contact-info">
+                            <h3>Как с нами связаться</h3>
+                            
+                            {% if contact %}
+                            <div class="contact-item">
+                                <div class="contact-icon">📞</div>
+                                <div class="contact-details">
+                                    <h5>Телефон</h5>
+                                    <p><a href="tel:{{ contact.phone }}">{{ contact.phone }}</a></p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-details">
+                                    <h5>Email</h5>
+                                    <p><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-details">
+                                    <h5>Адрес</h5>
+                                    <p>Прохладная улица, 4, с. Озерное, Майминский район, Республика Алтай</p>
+                                    <div class="mt-2">
+                                        <a href="https://2gis.ru/search/%D0%9F%D1%80%D0%BE%D1%85%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%2C%204%2C%20%D1%81.%20%D0%9E%D0%B7%D0%B5%D1%80%D0%BD%D0%BE%D0%B5%2C%20%D0%9C%D0%B0%D0%B9%D0%BC%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D1%80-%D0%BD%2C%20%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%20%D0%90%D0%BB%D1%82%D0%B0%D0%B9" class="btn btn-outline-primary btn-sm me-2" target="_blank" rel="noopener">Открыть в 2ГИС</a>
+                                        <a href="https://2gis.ru/routeSearch/rsType/car/to/%D0%9F%D1%80%D0%BE%D1%85%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%2C%204%2C%20%D1%81.%20%D0%9E%D0%B7%D0%B5%D1%80%D0%BD%D0%BE%D0%B5%2C%20%D0%9C%D0%B0%D0%B9%D0%BC%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D1%80-%D0%BD%2C%20%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%20%D0%90%D0%BB%D1%82%D0%B0%D0%B9" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener">Маршрут</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">⏰</div>
+                                <div class="contact-details">
+                                    <h5>Время работы</h5>
+                                    <p>{{ contact.working_hours }}</p>
+                                </div>
+                            </div>
+
+                            {% if contact.telegram or contact.whatsapp %}
+                            <div class="contact-item">
+                                <div class="contact-icon">💬</div>
+                                <div class="contact-details">
+                                    <h5>Мессенджеры</h5>
+                                    <div class="social-links">
+                                        {% if contact.telegram %}
+                                        <a href="{{ contact.telegram }}" class="btn btn-outline-primary btn-sm me-2" target="_blank" rel="noopener">
+                                            <i class="fab fa-telegram"></i> Telegram
+                                        </a>
+                                        {% endif %}
+                                        {% if contact.whatsapp %}
+                                        <a href="{{ contact.whatsapp }}" class="btn btn-outline-success btn-sm" target="_blank" rel="noopener">
+                                            <i class="fab fa-whatsapp"></i> WhatsApp
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <!-- Default contact info if no contact object -->
+                            <div class="contact-item">
+                                <div class="contact-icon">📞</div>
+                                <div class="contact-details">
+                                    <h5>Телефон</h5>
+                                    <p><a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-details">
+                                    <h5>Email</h5>
+                                    <p><a href="mailto:info@altai-tishina.ru">info@altai-tishina.ru</a></p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-details">
+                                    <h5>Адрес</h5>
+                                    <p>Прохладная улица, 4, с. Озерное, Майминский район, Республика Алтай</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">⏰</div>
+                                <div class="contact-details">
+                                    <h5>Время работы</h5>
+                                    <p>Круглосуточно, заезд с 14:00, выезд до 12:00</p>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Map coordinates -->
+                            <div class="contact-item">
+                                <div class="contact-icon">🗺️</div>
+                                <div class="contact-details">
+                                    <h5>Координаты</h5>
+                                    <p>51.821091° N, 85.802135° E</p>
+                                    <a href="https://2gis.ru/routeSearch/51.821091,85.802135" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener">
+                                        Открыть в 2ГИС
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="col-lg-7">
+                        <div class="contact-form">
+                            <div class="card shadow">
+                                <div class="card-body p-4">
+                                    <h3 class="mb-4">Написать нам</h3>
+                                    
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                {{ form.name|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                {{ form.phone|as_crispy_field }}
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form.message|as_crispy_field }}
+                                        </div>
+
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                                Отправить сообщение
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ section -->
+                <div class="faq-section mt-5">
+                    <h2 class="text-center mb-4">Часто задаваемые вопросы</h2>
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                    Можно ли приехать без предварительного бронирования?
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Мы рекомендуем бронировать домики заранее, особенно в сезон (июнь-август). Однако если есть свободные места, мы всегда рады принять гостей.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                    Есть ли Wi-Fi на базе отдыха?
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Да, на всей территории базы отдыха доступен бесплатный Wi-Fi. Скорость интернета достаточна для работы и общения с близкими.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                    Можно ли приехать с домашними животными?
+                                </button>
+                            </h2>
+                            <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Да, мы принимаем гостей с домашними животными. Пожалуйста, предупредите нас заранее и соблюдайте правила содержания животных на территории.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                    Есть ли парковка для автомобилей?
+                                </button>
+                            </h2>
+                            <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Да, на территории базы отдыха есть бесплатная парковка для автомобилей гостей. Парковка находится под видеонаблюдением.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.contact-details h5 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.contact-details p {
+    margin-bottom: 0.5rem;
+}
+
+.contact-details a {
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-details a:hover {
+    color: var(--primary-color);
+}
+
+.social-links .btn {
+    margin-bottom: 0.5rem;
+}
+
+.contact-form .card {
+    border: none;
+    border-radius: 12px;
+}
+
+.how-to-get-there .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.how-to-get-there .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.faq-section .accordion-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.faq-section .accordion-button {
+    background-color: white;
+    color: var(--text-dark);
+    border: none;
+    border-radius: 8px;
+}
+
+.faq-section .accordion-button:not(.collapsed) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.faq-section .accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(45, 90, 39, 0.25);
+}
+
+@media (max-width: 768px) {
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .contact-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
+

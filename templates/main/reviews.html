@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Отзывы гостей - База отдыха "AltaiResort"{% endblock %}
+
+{% block content %}
+<section class="reviews-page py-5">
+    <div class="container">
+        <h1 class="section-title text-center">Отзывы наших гостей</h1>
+        <p class="lead text-center mb-5">Что говорят о нас те, кто уже побывал в гостях</p>
+        
+        {% if reviews %}
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card review-card h-100">
+                    <div class="card-body">
+                        <div class="review-header">
+                            {% if review.avatar %}
+                            <img src="{{ review.avatar.url }}" alt="Фото {{ review.guest_name }}" class="review-avatar">
+                            {% endif %}
+                            <div class="review-info">
+                                <h4 class="review-author">{{ review.guest_name }}</h4>
+                                <div class="review-rating">
+                                    {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                    <span class="star filled">⭐</span>
+                                    {% else %}
+                                    <span class="star">☆</span>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-text">{{ review.text }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p>Пока нет отзывов</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+
+
+
+
+

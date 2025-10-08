@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Бронирование подтверждено — AltaiResort{% endblock %}
+
+{% block content %}
+<section class="booking-success-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <div class="success-icon mb-4">
+                        <span>✅</span>
+                    </div>
+                    <h1 class="section-title text-success">Бронирование подтверждено!</h1>
+                    <p class="lead">Спасибо за ваш выбор! Мы свяжемся с вами в ближайшее время для подтверждения деталей.</p>
+                </div>
+
+                <!-- Booking details -->
+                <div class="card shadow mb-5">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Детали бронирования</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Информация о доме</h5>
+                                <p><strong>Название:</strong> {{ booking.house.name }}</p>
+                                <p><strong>Вместимость:</strong> {{ booking.house.capacity }} мест</p>
+                                <p><strong>Цена за ночь:</strong> {{ booking.house.price_per_night }} ₽</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Информация о госте</h5>
+                                <p><strong>Имя:</strong> {{ booking.guest_name }}</p>
+                                <p><strong>Телефон:</strong> {{ booking.guest_phone }}</p>
+                                {% if booking.guest_email %}
+                                <p><strong>Email:</strong> {{ booking.guest_email }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Даты пребывания</h5>
+                                <p><strong>Заезд:</strong> {{ booking.check_in_date|date:"d.m.Y" }}</p>
+                                <p><strong>Выезд:</strong> {{ booking.check_out_date|date:"d.m.Y" }}</p>
+                                <p><strong>Количество ночей:</strong> 
+                                    {% widthratio booking.check_out_date|date:"U" booking.check_in_date|date:"U" 86400 %}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Стоимость</h5>
+                                <p><strong>Общая стоимость:</strong> <span class="text-primary fw-bold">{{ booking.total_price }} ₽</span></p>
+                                <p><strong>Статус:</strong> 
+                                    <span class="badge bg-warning">{{ booking.get_status_display }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        {% if booking.special_requests %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Особые пожелания</h5>
+                                <p>{{ booking.special_requests }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Next steps -->
+                <div class="card shadow mb-5">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="mb-0">Что дальше?</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="step-item">
+                                    <div class="step-number">1</div>
+                                    <div class="step-content">
+                                        <h5>Подтверждение</h5>
+                                        <p>Мы свяжемся с вами в течение 2 часов для подтверждения бронирования</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="step-item">
+                                    <div class="step-number">2</div>
+                                    <div class="step-content">
+                                        <h5>Предоплата</h5>
+                                        <p>Для подтверждения бронирования потребуется предоплата 30% от общей стоимости</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="step-item">
+                                    <div class="step-number">3</div>
+                                    <div class="step-content">
+                                        <h5>Подготовка</h5>
+                                        <p>Мы подготовим дом к вашему приезду и отправим подробную информацию</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="step-item">
+                                    <div class="step-number">4</div>
+                                    <div class="step-content">
+                                        <h5>Приезд</h5>
+                                        <p>Добро пожаловать! Заезд с 14:00, выезд до 12:00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important information -->
+                <div class="card shadow mb-5">
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="mb-0">⚠️ Важная информация</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2">📞 <strong>Телефон для связи:</strong> {{ contact.phone|default:"+7 (999) 123-45-67" }}</li>
+                            <li class="mb-2">📧 <strong>Email:</strong> {{ contact.email|default:"info@altairesort.ru" }}</li>
+                            <li class="mb-2">📍 <strong>Адрес:</strong> {{ contact.address|default:"с. Озерное, Майминский район, Республика Алтай" }}</li>
+                            <li class="mb-2">⏰ <strong>Время работы:</strong> {{ contact.working_hours|default:"Круглосуточно" }}</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-3">
+                            <strong>Напоминание:</strong> Заезд с 14:00, выезд до 12:00. При раннем заезде или позднем выезде уточните возможность заранее.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA buttons -->
+                <div class="text-center">
+                    <div class="cta-buttons">
+                        <a href="{% url 'main:houses_list' %}" class="btn btn-outline-primary btn-lg me-3">Посмотреть другие дома</a>
+                        <a href="{% url 'main:contact' %}" class="btn btn-primary btn-lg">Связаться с нами</a>
+                    </div>
+                </div>
+
+                <!-- Additional services -->
+                <div class="additional-services mt-5">
+                    <h3 class="text-center mb-4">Дополнительные услуги</h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="service-card text-center p-3">
+                                <div class="service-icon mb-2">🚗</div>
+                                <h5>Трансфер</h5>
+                                <p>Встреча в Чемале - 500 ₽</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="service-card text-center p-3">
+                                <div class="service-icon mb-2">🍽️</div>
+                                <h5>Питание</h5>
+                                <p>Завтрак, обед, ужин</p>
+                            </div>
+                        </div>
+                        <!-- Услуга Баня удалена по требованию -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.success-icon span {
+    font-size: 4rem;
+    animation: bounceIn 0.8s ease-out;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.step-content h5 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.service-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+    font-size: 2rem;
+}
+
+.cta-buttons .btn {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .step-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        align-self: center;
+    }
+}
+</style>
+{% endblock %}
+
+
+
+
+

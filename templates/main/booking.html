@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Бронирование дома — AltaiResort{% endblock %}
+
+{% block content %}
+<section class="booking-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1 class="section-title">Бронирование дома</h1>
+                    <p class="lead">Выберите удобные даты и забронируйте свой идеальный отдых в горах Алтая</p>
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <form method="post" class="booking-form" id="bookingForm">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.house|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.guests_count|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.check_in_date|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.check_out_date|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.guest_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.guest_phone|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.guest_email|as_crispy_field }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.special_requests|as_crispy_field }}
+                            </div>
+
+                            <!-- Price calculation -->
+                            <div class="price-calculation mb-4 p-3 bg-light rounded">
+                                <h5>Расчет стоимости</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p><strong>Количество ночей:</strong> <span id="nights">-</span></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p><strong>Цена за ночь:</strong> <span id="pricePerNight">-</span></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p><strong>Общая стоимость:</strong> <span id="totalPrice" class="text-primary fw-bold">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
+                                    Отправить заявку
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Additional information -->
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h4>📋 Условия бронирования</h4>
+                                <ul class="list-unstyled">
+                                    <li>✓ Минимальный период - 1 ночь</li>
+                                    <li>✓ Заезд с 14:00, выезд до 12:00</li>
+                                    <li>✓ Предоплата 30% при подтверждении</li>
+                                    <li>✓ Бесплатная отмена за 7 дней</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h4>💳 Способы оплаты</h4>
+                                <ul class="list-unstyled">
+                                    <li>💳 Банковские карты</li>
+                                    <li>📱 Электронные кошельки</li>
+                                    <li>🏦 Банковский перевод</li>
+                                    <li>💵 Наличные при заезде</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('bookingForm');
+    const houseSelect = document.getElementById('id_house');
+    const checkInInput = document.getElementById('id_check_in_date');
+    const checkOutInput = document.getElementById('id_check_out_date');
+    const nightsSpan = document.getElementById('nights');
+    const pricePerNightSpan = document.getElementById('pricePerNight');
+    const totalPriceSpan = document.getElementById('totalPrice');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Store house prices
+    const housePrices = {};
+    {% for house in houses %}
+    housePrices[{{ house.id }}] = {{ house.price_per_night }};
+    {% endfor %}
+
+    // Calculate price when dates or house changes
+    function calculatePrice() {
+        const houseId = houseSelect.value;
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+
+        if (houseId && checkIn && checkOut) {
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+            const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+            const pricePerNight = housePrices[houseId];
+
+            if (nights > 0 && pricePerNight) {
+                const totalPrice = nights * pricePerNight;
+                
+                nightsSpan.textContent = nights;
+                pricePerNightSpan.textContent = pricePerNight + ' ₽';
+                totalPriceSpan.textContent = totalPrice + ' ₽';
+                
+                return true;
+            }
+        }
+        
+        // Reset display
+        nightsSpan.textContent = '-';
+        pricePerNightSpan.textContent = '-';
+        totalPriceSpan.textContent = '-';
+        return false;
+    }
+
+    // Add event listeners
+    houseSelect.addEventListener('change', calculatePrice);
+    checkInInput.addEventListener('change', calculatePrice);
+    checkOutInput.addEventListener('change', calculatePrice);
+
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (checkIn < today) {
+            e.preventDefault();
+            alert('Дата заезда не может быть в прошлом');
+            return;
+        }
+
+        if (checkOut <= checkIn) {
+            e.preventDefault();
+            alert('Дата выезда должна быть позже даты заезда');
+            return;
+        }
+
+        // Show loading state
+        submitBtn.textContent = 'Отправка...';
+        submitBtn.disabled = true;
+    });
+
+    // Set minimum dates
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.min = today;
+    checkOutInput.min = today;
+
+    // Update checkout min date when checkin changes
+    checkInInput.addEventListener('change', function() {
+        const checkIn = this.value;
+        if (checkIn) {
+            const nextDay = new Date(checkIn);
+            nextDay.setDate(nextDay.getDate() + 1);
+            checkOutInput.min = nextDay.toISOString().split('T')[0];
+            
+            // If checkout is before new checkin, update it
+            if (checkOutInput.value && checkOutInput.value <= checkIn) {
+                checkOutInput.value = nextDay.toISOString().split('T')[0];
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+

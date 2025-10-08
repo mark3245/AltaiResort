@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ house.name }} — AltaiResort{% endblock %}
+
+{% block content %}
+<section class="house-detail-page py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="section-title">{{ house.name }}</h1>
+                <p class="lead">{{ house.description }}</p>
+                
+                {% if house.image %}
+                <img src="{{ house.image.url }}" alt="{{ house.name }}" class="img-fluid rounded mb-4">
+                {% endif %}
+                
+                <div class="house-info">
+                    <h3>Характеристики дома</h3>
+                    <ul>
+                        <li>Вместимость: {{ house.capacity }} мест</li>
+                        <li>Цена за ночь: {{ house.price_per_night }} ₽</li>
+                        <li>Статус: {% if house.is_available %}Доступен{% else %}Занят{% endif %}</li>
+                    </ul>
+                </div>
+                
+                <a href="{% url 'main:booking' %}?house={{ house.id }}" class="btn btn-primary btn-lg">Забронировать этот дом</a>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Быстрое бронирование</h4>
+                        <p>Забронируйте дом прямо сейчас!</p>
+                        <a href="{% url 'main:booking' %}?house={{ house.id }}" class="btn btn-primary w-100">Забронировать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AltaiResort — уютные дома в горах Алтая | Бронирование онлайн{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="home" aria-label="Главный экран">
+    <div class="hero__video-bg">
+        <img src="{% static 'images/1.jpeg' %}" alt="Вид на Алтайские горы - заснеженные вершины и зеленые склоны">
+    </div>
+    <div class="hero__content">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h2 class="hero__title">Ваша тишина на Алтае</h2>
+                    <p class="hero__subtitle">Уютная база отдыха с домашней атмосферой в сердце гор</p>
+                    <a href="{% url 'main:booking' %}" class="btn btn-primary btn-lg hero__cta-btn">Забронировать дом</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero__scroll-indicator" aria-hidden="true">
+        <span>Листайте вниз</span>
+        <div class="scroll-arrow"></div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about" id="about" aria-label="О нашей базе отдыха">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="about__text">
+                    <h2 class="section-title">О нашей базе отдыха</h2>
+                    <p class="lead">Мы создали место, где можно по-настоящему отдохнуть от городской суеты. Наша база отдыха расположена в живописном уголке Алтая, где горы встречаются с лесом, а река создает умиротворяющий шум.</p>
+                    <div class="about__features">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="feature">
+                                    <div class="feature__icon" aria-hidden="true">🏠</div>
+                                    <div>
+                                        <h3>5 уютных домов</h3>
+                                        <p>От 2 до 6 мест, каждый со своим характером и комфортом</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="feature">
+                                    <div class="feature__icon" aria-hidden="true">🌲</div>
+                                    <div>
+                                        <h3>Частная территория</h3>
+                                        <p>15 гектаров леса для вашего уединенного отдыха</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="feature">
+                                    <div class="feature__icon" aria-hidden="true">📶</div>
+                                    <div>
+                                        <h3>Wi-Fi в горах</h3>
+                                        <p>Стабильный интернет для связи с близкими</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about__image">
+                    <img src="{% static 'images/2.jpeg' %}" alt="База отдыха АлтайТишина - деревянные домики среди сосен" class="img-fluid rounded" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Houses Preview Section -->
+{% if houses %}
+<section class="houses-preview" aria-label="Наши дома">
+    <div class="container">
+        <h2 class="section-title text-center">Наши дома</h2>
+        <div class="row">
+            {% for house in houses %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card house-card h-100">
+                    {% if house.image %}
+                    <img src="{{ house.image.url }}" class="card-img-top" alt="{{ house.name }}" loading="lazy">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title">{{ house.name }}</h3>
+                        <p class="card-text">{{ house.description|truncatewords:20 }}</p>
+                        <div class="house-features">
+                            <span class="badge bg-primary">👥 {{ house.capacity }} мест</span>
+                            <span class="badge bg-success">💰 {{ house.price_per_night }} ₽/ночь</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'main:house_detail' house.id %}" class="btn btn-outline-primary">Подробнее</a>
+                        <a href="{% url 'main:booking' %}?house={{ house.id }}" class="btn btn-primary">Забронировать</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'main:houses_list' %}" class="btn btn-outline-primary btn-lg">Посмотреть все дома</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Static Houses Cards if no DB items or to showcase -->
+<section class="houses-preview" aria-label="Наши дома (пример)">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card house-card h-100">
+                    <img src="{% static 'images/3.jpeg' %}" class="card-img-top" alt="Дом №1" loading="lazy">
+                    <div class="card-body">
+                        <h3 class="card-title">Дом «Лесной»</h3>
+                        <p class="card-text">Уютный дом среди сосен, идеален для семейного отдыха. Терраса, мангал, парковка.</p>
+                        <div class="house-features">
+                            <span class="badge bg-primary">👥 4 места</span>
+                            <span class="badge bg-success">💰 4500 ₽/ночь</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card house-card h-100">
+                    <img src="{% static 'images/4.jpeg' %}" class="card-img-top" alt="Дом №2" loading="lazy">
+                    <div class="card-body">
+                        <h3 class="card-title">Дом «Горный»</h3>
+                        <p class="card-text">Светлый дом с панорамными окнами и видом на горы. Рядом прогулочные тропы.</p>
+                        <div class="house-features">
+                            <span class="badge bg-primary">👥 6 мест</span>
+                            <span class="badge bg-success">💰 5500 ₽/ночь</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ </section>
+
+<!-- Advantages Section -->
+<section class="advantages" aria-label="Преимущества базы отдыха">
+    <div class="container">
+        <h2 class="section-title text-center">Почему выбирают нас</h2>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="advantage text-center">
+                    <div class="advantage__icon" aria-hidden="true">📶</div>
+                    <h3>Wi-Fi в горах</h3>
+                    <p>Стабильный интернет даже в самых отдаленных уголках для связи с близкими</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="advantage text-center">
+                    <div class="advantage__icon" aria-hidden="true">🚗</div>
+                    <h3>Удобный подъезд</h3>
+                    <p>Дорога доступна в любое время года, есть парковка для автомобилей</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="advantage text-center">
+                    <div class="advantage__icon" aria-hidden="true">🍽️</div>
+                    <h3>Кухня-столовая</h3>
+                    <p>Домашняя еда и возможность готовить самостоятельно в оборудованной кухне</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="advantage text-center">
+                    <div class="advantage__icon" aria-hidden="true">🎣</div>
+                    <h3>Рыбалка</h3>
+                    <p>Озеро с чистой водой и богатой ихтиофауной</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Preview Section -->
+{% if gallery_images %}
+<section class="gallery-preview" id="gallery" aria-label="Фотогалерея базы отдыха">
+    <div class="container">
+        <h2 class="section-title text-center">Погружение в атмосферу</h2>
+        <div class="row">
+            {% for image in gallery_images %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="gallery-item">
+                    <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="img-fluid rounded" loading="lazy">
+                    <div class="gallery-caption">
+                        <h4>{{ image.title }}</h4>
+                        {% if image.description %}
+                        <p>{{ image.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'main:gallery' %}" class="btn btn-outline-primary btn-lg">Смотреть всю галерею</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Reviews Preview Section -->
+{% if reviews %}
+<section class="reviews-preview" aria-label="Отзывы гостей">
+    <div class="container">
+        <h2 class="section-title text-center">Отзывы наших гостей</h2>
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card review-card h-100">
+                    <div class="card-body">
+                        <div class="review-header">
+                            {% if review.avatar %}
+                            <img src="{{ review.avatar.url }}" alt="Фото {{ review.guest_name }}" class="review-avatar" loading="lazy">
+                            {% endif %}
+                            <div class="review-info">
+                                <h4 class="review-author">{{ review.guest_name }}</h4>
+                                <div class="review-rating">
+                                    {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                    <span class="star filled">⭐</span>
+                                    {% else %}
+                                    <span class="star">☆</span>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-text">{{ review.text|truncatewords:30 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'main:reviews' %}" class="btn btn-outline-primary btn-lg">Читать все отзывы</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Map Section -->
+<section class="map-section" id="contacts" aria-label="Как добраться до базы отдыха">
+    <div class="container">
+        <h2 class="section-title text-center">Как добраться</h2>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="map-info">
+                    {% if contact %}
+                    <h3>Адрес</h3>
+                    <address>
+                        <p>Прохладная улица, 4, с. Озерное, Майминский район, Республика Алтай</p>
+                    </address>
+                    
+                    <h3>Координаты</h3>
+                    <p>{{ contact.coordinates_lat }}° N, {{ contact.coordinates_lng }}° E</p>
+                    
+                    <h3>Время работы</h3>
+                    <p>{{ contact.working_hours }}</p>
+                    {% endif %}
+                    
+                    <div class="map-buttons">
+                        <a href="https://2gis.ru/search/%D0%9F%D1%80%D0%BE%D1%85%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%2C%204%2C%20%D1%81.%20%D0%9E%D0%B7%D0%B5%D1%80%D0%BD%D0%BE%D0%B5%2C%20%D0%9C%D0%B0%D0%B9%D0%BC%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D1%80-%D0%BD%2C%20%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%20%D0%90%D0%BB%D1%82%D0%B0%D0%B9" class="btn btn-secondary" target="_blank" rel="noopener">Открыть в 2ГИС</a>
+                        <a href="https://2gis.ru/routeSearch/rsType/car/to/%D0%9F%D1%80%D0%BE%D1%85%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%2C%204%2C%20%D1%81.%20%D0%9E%D0%B7%D0%B5%D1%80%D0%BD%D0%BE%D0%B5%2C%20%D0%9C%D0%B0%D0%B9%D0%BC%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9%20%D1%80-%D0%BD%2C%20%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%20%D0%90%D0%BB%D1%82%D0%B0%D0%B9" class="btn btn-outline-primary" target="_blank" rel="noopener">Построить маршрут</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="map-container">
+                    <iframe src="https://widgets.2gis.com/widget?type=firmsonmap&options={%7B%22position%22:%7B%22lat%22:51.821091,%22lon%22:85.802135,%22zoom%22:15%7D,%22opt%22:%7B%22city%22:%22altai%22%7D%7D}" width="100%" height="400" frameborder="0" style="border:0;border-radius:12px;" allowfullscreen aria-label="Карта 2ГИС"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta" aria-label="Призыв к действию">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2>Готовы к незабываемому отдыху?</h2>
+                <p>Проверьте доступность дат и забронируйте свой идеальный отпуск в горах Алтая</p>
+                <a href="{% url 'main:booking' %}" class="btn btn-primary btn-lg">Проверить даты</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
