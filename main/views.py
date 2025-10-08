@@ -17,15 +17,23 @@ def get_contact_safe():
         return Contact.objects.first()
     except (OperationalError, ProgrammingError):
         return None
+
+
+def safe_list(queryset_fn, limit=None):
+    try:
+        qs = queryset_fn()
+        return qs[:limit] if limit else qs
+    except (OperationalError, ProgrammingError):
+        return []
 from .forms import BookingForm, ContactForm
 
 
 def home(request):
     """Главная страница"""
     context = {
-        'houses': House.objects.filter(is_available=True)[:3],
-        'reviews': Review.objects.filter(is_approved=True)[:3],
-        'gallery_images': GalleryImage.objects.filter(is_featured=True)[:6],
+        'houses': safe_list(lambda: House.objects.filter(is_available=True), limit=3),
+        'reviews': safe_list(lambda: Review.objects.filter(is_approved=True), limit=3),
+        'gallery_images': safe_list(lambda: GalleryImage.objects.filter(is_featured=True), limit=6),
         'contact': get_contact_safe(),
     }
     return render(request, 'main/home.html', context)
@@ -33,7 +41,7 @@ def home(request):
 
 def houses_list(request):
     """Список всех домиков"""
-    houses = House.objects.filter(is_available=True)
+    houses = safe_list(lambda: House.objects.filter(is_available=True))
     
     # Фильтрация по цене
     min_price = request.GET.get('min_price')
@@ -67,7 +75,7 @@ def houses_list(request):
         houses = houses.order_by('name')
     
     # Пагинация
-    paginator = Paginator(houses, 6)
+    paginator = Paginator(houses, 6) if houses else Paginator([], 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -81,7 +89,10 @@ def houses_list(request):
 
 def house_detail(request, house_id):
     """Детальная страница домика"""
-    house = get_object_or_404(House, id=house_id, is_available=True)
+    try:
+        house = get_object_or_404(House, id=house_id, is_available=True)
+    except (OperationalError, ProgrammingError):
+        return redirect('main:houses_list')
     
     # Проверяем доступность дат
     check_in = request.GET.get('check_in')
@@ -100,7 +111,7 @@ def house_detail(request, house_id):
 
 def gallery(request):
     """Страница галереи"""
-    images = GalleryImage.objects.all().order_by('order', '-created_at')
+    images = safe_list(lambda: GalleryImage.objects.all().order_by('order', '-created_at'))
     
     # Пагинация
     paginator = Paginator(images, 12)
@@ -117,10 +128,10 @@ def gallery(request):
 
 def reviews(request):
     """Страница отзывов"""
-    reviews = Review.objects.filter(is_approved=True).order_by('-created_at')
+    reviews_qs = safe_list(lambda: Review.objects.filter(is_approved=True).order_by('-created_at'))
     
     # Пагинация
-    paginator = Paginator(reviews, 10)
+    paginator = Paginator(reviews_qs, 10) if reviews_qs else Paginator([], 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
